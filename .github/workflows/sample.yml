@@ -1,0 +1,43 @@
+# This is a basic workflow that is manually triggered
+
+name: Make AdiBags-Addon
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+  push:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "greet"
+  adibags-creator:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Runs a single command using the runners shell
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+          fetch-depth: 0
+    - name: Cache Items DB
+      id: cache-db
+      uses: actions/cache@v3
+      with:
+        path: itemname.cache.sqlite
+        key: items-db
+    - name: Processing
+      uses: ./ # Uses an action in the root directory
+      id: processing
+      env:
+        BLIZZ_ID: ${{ secrets.BLIZZ_ID }}
+        BLIZZ_SECRET: ${{ secrets.BLIZZ_SECRET }}
+        ADDON_VARIANT: "TestlandsFlight"
+        ADDON_COLOR: "cff008a57"
+        TOC_VERSION: "100002"
+        CURSE_ID: "a"
+        WOW_INTERFACE_ID: "b"
+        WAGO_ID: "c"
+

@@ -1,0 +1,4 @@
+/items/
+/out/
+__pycache__/
+/itemname.cache.sqlite

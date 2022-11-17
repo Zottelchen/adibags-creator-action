@@ -1,0 +1,6 @@
+name: 'AdbiBagsCreator'
+description: 'Create AdiBags File'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
