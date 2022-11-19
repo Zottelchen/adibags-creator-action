@@ -42,7 +42,7 @@ local function MatchIDs_Init(self)
 end
 
 local setFilter = AdiBags:RegisterFilter("%ADDON_VARIANT%", 98, "ABEvent-1.0")
-setFilter.uiName = "|%ADDON_COLOR%%ADDON_VARIANT%|r"
+setFilter.uiName = "|cff%ADDON_COLOR%%ADDON_VARIANT%|r"
 setFilter.uiDesc = "Items from the %ADDON_VARIANT%\n|cff50C878Filter version: @project-version@|r"
 
 function setFilter:OnInitialize()
