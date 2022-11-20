@@ -43,7 +43,7 @@ end
 
 local setFilter = AdiBags:RegisterFilter("%ADDON_VARIANT%", 98, "ABEvent-1.0")
 setFilter.uiName = "|cff%ADDON_COLOR%%ADDON_VARIANT%|r"
-setFilter.uiDesc = "Items from the %ADDON_VARIANT%\n|cff50C878Filter version: @project-version@|r"
+setFilter.uiDesc = "Items from the %ADDON_VARIANT%\n|cffFFD800Filter version: @project-version@|r"
 
 function setFilter:OnInitialize()
     self.db = AdiBags.db:RegisterNamespace("%ADDON_VARIANT%", {
