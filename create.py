@@ -17,11 +17,7 @@ REPLACERS = {
     "%WAGO_ID%": os.environ.get("WAGO_ID"),
 }
 OUTDIR = "out/"
-SIGN_REPLACER = {
-    "➡": "{",
-    "⬅": "}",
-    "↔": "{}"
-}
+SIGN_REPLACER = {"➡": "{", "⬅": "}", "↔": "{}"}
 
 
 # OUTDIR = str(Path(os.path.dirname(os.path.realpath(__file__))).parent) + "/"
@@ -54,7 +50,9 @@ def main():
                     group["comment"] = line.strip().replace("#", "")
                     print("\tFound Markdown Comment:", group["comment"])
                 elif "!" in line:
-                    group["adibagsdesc"] = line.strip().replace("!", "").replace('"',"'")
+                    group["adibagsdesc"] = (
+                        line.strip().replace("!", "").replace('"', "'")
+                    )
                     print("\tFound AdiBags Description:", group["adibagsdesc"])
                 elif "$" in line:
                     group["adibagscolor"] = "ff" + line.strip().replace("$", "").lower()
@@ -81,6 +79,8 @@ def main():
 
 
 def get_item_name(itemid, access_token):
+    if os.environ.get("DEBUG") == "1":
+        return ""
     c.execute("SELECT EXISTS(SELECT 1 FROM itemnames WHERE id=?)", (itemid,))
     record = c.fetchone()
     if record[0] == 1:
@@ -205,7 +205,9 @@ def create_lua(itemdict):
     str_lua = mass_replace(str_lua, SIGN_REPLACER)
     str_lua = str_lua.replace("\t", "    ")
 
-    with open(OUTDIR + f"AdiBags_{REPLACERS['%ADDON_VARIANT%']}.lua", "w", encoding="utf8") as f:
+    with open(
+        OUTDIR + f"AdiBags_{REPLACERS['%ADDON_VARIANT%']}.lua", "w", encoding="utf8"
+    ) as f:
         f.write(str_lua)
 
 
@@ -213,7 +215,9 @@ def create_toc():
     print("Creating TOC file.")
     str_toc = get_form("toc.toc")
     str_toc = mass_replace(str_toc, REPLACERS)
-    with open(OUTDIR + f"AdiBags_{REPLACERS['%ADDON_VARIANT%']}.toc", "w", encoding="utf8") as f:
+    with open(
+        OUTDIR + f"AdiBags_{REPLACERS['%ADDON_VARIANT%']}.toc", "w", encoding="utf8"
+    ) as f:
         f.write(str_toc)
 
 
