@@ -54,7 +54,7 @@ def main():
                     group["comment"] = line.strip().replace("#", "")
                     print("\tFound Markdown Comment:", group["comment"])
                 elif "!" in line:
-                    group["adibagsdesc"] = line.strip().replace("!", "")
+                    group["adibagsdesc"] = line.strip().replace("!", "").replace('"',"'")
                     print("\tFound AdiBags Description:", group["adibagsdesc"])
                 elif "$" in line:
                     group["adibagscolor"] = "ff" + line.strip().replace("$", "").lower()
