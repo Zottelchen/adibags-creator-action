@@ -1,12 +1,13 @@
 import os
-import sqlite3
+import sys
 from glob import glob
 from json import JSONDecodeError
 from pathlib import Path
 from colorama import Fore
 import requests
 
-import blizzauth
+import blizzardapi
+import github
 
 REPLACERS = {
     "%ADDON_VARIANT%": os.environ.get("ADDON_VARIANT"),
@@ -16,19 +17,17 @@ REPLACERS = {
     "%WOW_INTERFACE_ID%": os.environ.get("WOW_INTERFACE_ID"),
     "%WAGO_ID%": os.environ.get("WAGO_ID"),
 }
-OUTDIR = "out/"
 SIGN_REPLACER = {"➡": "{", "⬅": "}", "↔": "{}"}
-
-
-# OUTDIR = str(Path(os.path.dirname(os.path.realpath(__file__))).parent) + "/"
+OUTDIR = "out/"
 
 
 def main():
     all_item_dict = {}
-
-    access_token = blizzauth.get_access()
+    access_token = "DEBUG"
+    if os.environ.get("DEBUG") != "1":
+        access_token = blizzardapi.auth()
+    itemname_cache = github.get_gist()
     for idfile in glob("items/*.txt"):
-        sort_file(idfile)
         groupname = Path(idfile).stem
         disabled = False
         if "#" in groupname:
@@ -64,55 +63,35 @@ def main():
                     group["override_method"] = line.strip().replace("*", "")
                     print("\tFound Override Method:", group["override_method"])
                 else:
+                    itemname, itemname_cache = get_item_name(line.strip(), access_token, itemname_cache)
                     items.append(
                         {
                             "id": line.strip(),
-                            "name": get_item_name(line.strip(), access_token),
+                            "name": itemname,
                         }
                     )
         group["items"] = items
         all_item_dict[groupname] = group
 
+    github.update_gist(itemname_cache)
     create_markdown(all_item_dict)
     create_lua(all_item_dict)
     create_toc()
 
 
-def get_item_name(itemid, access_token):
-    if os.environ.get("DEBUG") == "1":
+def get_item_name(itemid, access_token: str, itemname_cache: dict = None) -> (str, dict):
+    if access_token == "DEBUG":
         return ""
-    c.execute("SELECT EXISTS(SELECT 1 FROM itemnames WHERE id=?)", (itemid,))
-    record = c.fetchone()
-    if record[0] == 1:
-        c.execute("SELECT * FROM itemnames WHERE id=?", (itemid,))
-        record = c.fetchone()
-        item_name = record[1]
-        print("\t\tFound Item in DB:", item_name, itemid)
+    if itemname_cache is None:
+        itemname_cache = {}
+    if itemid in itemname_cache:  # Check if we have the name cached
+        item_name = itemname_cache[itemid]
+        print(f"\t\t{Fore.CYAN}Found Item in Item Cache:  {itemid} {item_name}{Fore.RESET}")
+        return item_name, itemname_cache
     else:
-        r = requests.get(
-            "https://us.api.blizzard.com/data/wow/item/"
-            + itemid
-            + "?namespace=static-us&locale=en_us&access_token="
-            + access_token
-        )
-        try:
-            item_name = r.json()["name"]
-            print("\t\tFound Item in API:", item_name, itemid)
-            c.execute(
-                "INSERT INTO itemnames (id, name) VALUES (?, ?);", (itemid, item_name)
-            )
-            db.commit()
-        except KeyError as e:
-            print(
-                f"{Fore.RED}KeyError at ID {itemid}: {e}\t||\tJSON: {r.text}{Fore.RESET}"
-            )
-            item_name = "ERROR"
-        except JSONDecodeError as e:
-            print(
-                f"{Fore.RED}JSONDecodeError at ID {itemid}: {e}\t||\tJSON: {r.text}{Fore.RESET}"
-            )
-            item_name = "ERROR"
-    return item_name
+        item_name = blizzardapi.fetch_itemname(itemid, access_token)
+        itemname_cache[itemid] = item_name
+    return item_name, itemname_cache
 
 
 def create_markdown(itemdict):
@@ -140,7 +119,6 @@ def create_lua(itemdict):
         key_clean = key.replace(" ", "").replace("'", "").replace("-", "")
 
         # ITEM LISTE
-
         itemlist += "\n -- {}\nlocal {} = ➡".format(key, key_clean + "IDs")
         for i in itemdict[key]["items"]:
             itemlist += "\n{}, -- {}".format(i["id"], i["name"])
@@ -206,7 +184,7 @@ def create_lua(itemdict):
     str_lua = str_lua.replace("\t", "    ")
 
     with open(
-        OUTDIR + f"AdiBags_{REPLACERS['%ADDON_VARIANT%']}.lua", "w", encoding="utf8"
+            OUTDIR + f"AdiBags_{REPLACERS['%ADDON_VARIANT%']}.lua", "w", encoding="utf8"
     ) as f:
         f.write(str_lua)
 
@@ -216,7 +194,7 @@ def create_toc():
     str_toc = get_form("toc.toc")
     str_toc = mass_replace(str_toc, REPLACERS)
     with open(
-        OUTDIR + f"AdiBags_{REPLACERS['%ADDON_VARIANT%']}.toc", "w", encoding="utf8"
+            OUTDIR + f"AdiBags_{REPLACERS['%ADDON_VARIANT%']}.toc", "w", encoding="utf8"
     ) as f:
         f.write(str_toc)
 
@@ -231,24 +209,10 @@ def mass_replace(file_str: str, replacers: dict, reverse: bool = False) -> str:
     return file_str
 
 
-def sort_file(file):
-    with open(file, "r") as r:
-        uniq = sorted(set(r.readlines()))
-    with open(file, "w") as w:
-        w.writelines(uniq)
-
-
 def get_form(form):
     content = Path("forms/" + form).read_text(encoding="utf-8")
     return content
 
 
-#########################################################################################
-db = sqlite3.connect("itemname.cache.sqlite")
-c = db.cursor()
-c.execute("CREATE TABLE IF NOT EXISTS itemnames (id INTEGER PRIMARY KEY, name TEXT)")
-
-main()
-
-c.close()
-#########################################################################################
+if __name__ == "__main__":
+    main()
