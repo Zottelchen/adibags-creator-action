@@ -3,7 +3,6 @@ from colorama import Fore
 import requests
 
 
-
 def auth():
     """Get an access token from Blizzard
     Required environment variables:
@@ -24,14 +23,11 @@ def auth():
 
 def fetch_itemname(itemid, access_token):
     r = requests.get(
-        "https://us.api.blizzard.com/data/wow/item/"
-        + itemid
-        + "?namespace=static-us&locale=en_us&access_token="
-        + access_token
+        f"https://us.api.blizzard.com/data/wow/item/{itemid}?namespace=static-us&locale=en_us&access_token={access_token}"
     )
     try:
         item_name = r.json()["name"]
-        print(f"\t\t{Fore.GREEN}Found Item in API: {itemid} {item_name}{Fore.RESET}")
+        print(f"\t\t{Fore.GREEN}Found Item in API: {itemid} ➡ {item_name}{Fore.RESET}")
         return item_name
     except KeyError as e:
         print(
