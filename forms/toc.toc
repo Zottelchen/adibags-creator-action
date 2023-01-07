@@ -1,11 +1,11 @@
 ## Interface: %TOC_VERSION%
-## Title: AdiBags - %ADDON_VARIANT%
+## Title: AdiBags - %FILTER_NAME%
 ## Version: @project-version@
 ## Author: Zottelchen
-## Notes: Adds various %ADDON_VARIANT% items to AdiBags item filters.
+## Notes: %FILTER_DESCRIPTION%
 ## Dependencies: AdiBags
 ## X-Curse-Project-ID: %CURSE_ID%
 ## X-WoWI-ID: %WOW_INTERFACE_ID%
 ## X-Wago-ID: %WAGO_ID%
 
-AdiBags_%ADDON_VARIANT%.lua
+AdiBags_%FILTER_NAME%.lua
