@@ -66,20 +66,19 @@ class AdiBagsAddon:
         # TOC
         print("Creating TOC file.")
         str_toc = self._replace(self.forms["toc.toc"])
-        with open(
-                f"out/AdiBags_{self.filter_name}.toc", "w", encoding="utf8"
-        ) as f:
+        with open(f"out/AdiBags_{self.filter_name}.toc", "w", encoding="utf8") as f:
             f.write(str_toc)
+
         # Main Addon
         print("Creating Main Addon file.")
         str_main = self.forms["main.lua"]
         for partial in self.partials.keys():
             str_main = str_main.replace(f"--!!{partial}!!--", self.partials[partial])
         str_main = self._replace(str_main)
-        with open(
-                f"out/AdiBags_{self.filter_name}.lua", "w", encoding="utf8"
-        ) as f:
+
+        with open(f"out/AdiBags_{self.filter_name}.lua", "w", encoding="utf8") as f:
             f.write(str_main)
+
         # Markdown
         print("Creating Markdown file.")
         str_md = "# How to Read this\n\nAll items are broken down into categories, with itemID followed by the Item name.\n\nLatest version: @project-version@\n\n"
@@ -92,27 +91,29 @@ class AdiBagsAddon:
                 for item_id in sorted(subcategory.item_map.keys()):
                     str_md += f"* {item_id} - {subcategory.item_map[item_id]}\n"
                 str_md += "\n"
-        with open(
-                f"out/supported_items.md", "w", encoding="utf8"
-        ) as f:
+        with open("out/supported_items.md", "w", encoding="utf8") as f:
             f.write(str_md)
-        # Todo: Locale
+
+        with open("out/locale.lua", "w", encoding="utf8") as f:
+            str_locale = self.forms["locale.lua"]
+            # Todo: Locale
+            str_locale = self._replace(str_locale)
+            f.write(str_locale)
 
     def _getpartials(self):
-        # TODO: maybe instead of trying to read from files build live?
         self.partials = {"MatchIDs": "", "Matching": "", "DefaultOptions": "", "Prefixes": "", "ConfigMenu": ""}
 
         # Prefixes are defined on an addon base
         for prefix in self.prefixes:
             if prefix.startswith("icon:"):
                 prefix = prefix.replace("icon:", "")
-                self.partials["Prefixes"] += f'\t\t\t\t\t["|T:{prefix}" .. AdiBags.HEADER_SIZE .. ":" .. AdiBags.HEADER_SIZE .. ":-2:-10|t"] = "|T{prefix}:" .. AdiBags.HEADER_SIZE .. "|t",\n'
+                self.partials["Prefixes"] += f'\t\t\t\t\t\t["|T{prefix}:" .. AdiBags.HEADER_SIZE .. ":" .. AdiBags.HEADER_SIZE .. ":-2:-10|t"] = "|T{prefix}:" .. AdiBags.HEADER_SIZE .. "|t",\n'
             else:
-                self.partials["Prefixes"] += f'\t\t\t\t\t["{prefix}"] = "{prefix}",\n'
+                self.partials["Prefixes"] += f'\t\t\t\t\t\t["{prefix}"] = "{prefix}",\n'
 
         e_order = 5
         # Working through the categories
-        for category in self.categories:
+        for category in sorted(self.categories):
             self.partials["ConfigMenu"] += f'\t\t{category.simple_name}_config = {{\n' \
                                            f'\t\t\ttype = "group",\n' \
                                            f'\t\t\tname = "|cff{category.color:06x}{category.name}|r",\n' \
@@ -122,8 +123,8 @@ class AdiBagsAddon:
                                            f'\t\t\targs = {{\n'
             e_order += 5
             i_order = 10
-            for subcategory in category.subcategories:
-                self.partials["MatchIDs"] += f"{subcategory.simple_name}_IDs = {{\n"
+            for subcategory in sorted(category.subcategories):
+                self.partials["MatchIDs"] += f"-- {subcategory.name}\nlocal {subcategory.simple_name}_IDs = {{\n"
                 for item in subcategory.item_map.keys():
                     self.partials["MatchIDs"] += f"{item}, -- {subcategory.item_map[item]}\n"
                 self.partials["MatchIDs"] += "}\n\n"

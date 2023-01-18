@@ -158,7 +158,7 @@ function setFilter:GetOptions()
             args = {
                 description = {
                     type = "description",
-                    name = "These settings affect all categories of this filter. |cffFFD800If you overwrite prefix or categorie color, you either need to toggle the color setting twice or reload.|r",
+                    name = "These settings affect all categories of this filter. |cffFFD800If you overwrite prefix or categorie color, you either need to toggle the color setting twice or reload. |cff529F00AdiBags never intended to use icons, so they are glitchy. Make sure to disable prefix color, if you use an icon. |r",
                     order = 1,
                 },
                 coloredCategories = {

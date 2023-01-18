@@ -17,27 +17,34 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Runs a single command using the runners shell
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
+      # Runs a single command using the runners shell
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
           fetch-depth: 0
-    - name: Cache Items DB
-      id: cache-db
-      uses: actions/cache@v3
-      with:
-        path: itemname.cache.sqlite
-        key: items-db
-    - name: Processing
-      uses: ./ # Uses an action in the root directory
-      id: processing
-      env:
-        BLIZZ_ID: ${{ secrets.BLIZZ_ID }}
-        BLIZZ_SECRET: ${{ secrets.BLIZZ_SECRET }}
-        ADDON_VARIANT: "TestlandsFlight"
-        ADDON_COLOR: "cff008a57"
-        TOC_VERSION: "100002"
-        CURSE_ID: "a"
-        WOW_INTERFACE_ID: "b"
-        WAGO_ID: "c"
+      - name: Processing
+        uses: ./ # Uses an action in the root directory
+        id: processing
+        env:
+          BLIZZ_ID: ${{ secrets.BLIZZ_ID }}
+          BLIZZ_SECRET: ${{ secrets.BLIZZ_SECRET }}
+      - name: Stylua
+        uses: JohnnyMorganz/stylua-action@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest # NOTE: we recommend pinning to a specific version in case of formatting changes
+          # CLI arguments
+          args: --verify --indent-type spaces --indent-width 2 --line-endings Windows --quote-style AutoPreferDouble out/AdiBags_REPLACENAME.lua out/locale.lua
+      - name: Luacheck linter
+        uses: lunarmodules/luacheck@v0
+        with:
+          args: out/AdiBags_REPLACENAME.lua --ignore 113 211 212 611 614 631
+          # ignored (see https://luacheck.readthedocs.io/en/stable/warnings.html):
+          # 113: Accessing an undefined global variable. - There are bound to be some as this an addon, as there are some functions which are known to WoW only.
+          # 211: Unused local variable. - Not important.
+          # 212: Unused argument. - Not important.
+          # 611: A line consists of nothing but whitespace. - Oh no! Oh wait, not important.
+          # 614: Trailing whitespace in a comment. - These reports are just plain wrong.
+          # 631: Line is too long. - Not important.
+
 
