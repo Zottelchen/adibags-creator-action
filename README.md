@@ -15,6 +15,7 @@ It takes item IDs from lists in /items and creates an AdiBags Plugin from that. 
 * The generator code has been reworked to be hopefully less of a headache to work with
 * some environment variables are no longer environment variables, but instead can be found in items/_addon.toml
 * The markdown file now is sorted & contains a sample image of the color used for the item category
+* the builder now uses poetry for dependency management instead of pip
 
 ## Environment Variables
 
