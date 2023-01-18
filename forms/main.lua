@@ -81,7 +81,7 @@ end
 local function MatchIDs_Init(self)
     wipe(Result)
 
-    --!!Matching!!--
+--!!Matching!!--
 
     return Result
 end
@@ -98,7 +98,7 @@ function setFilter:OnInitialize()
             customPrefix = "",
             coloredPrefix = true,
             prefixColor = converttorgb("%ADDON_COLOR%", true),
-            --!!DefaultOptions!!--
+--!!DefaultOptions!!--
         }
     })
 end
@@ -176,7 +176,7 @@ function setFilter:GetOptions()
                     values = {
                         [""] = "None",
                         ["!CUSTOM"] = "Custom Prefix",
-                        --!!Prefixes!!--
+--!!Prefixes!!--
                     },
 
                 },
@@ -219,8 +219,7 @@ function setFilter:GetOptions()
             },
 
         },
-
-        --!!ConfigMenu!!--
+--!!ConfigMenu!!--
     },
 
     AdiBags:GetOptionHandler(self, false, function()

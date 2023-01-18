@@ -1,7 +1,6 @@
 import json
 import os
 from datetime import datetime
-from pprint import pprint
 
 import requests
 
@@ -30,11 +29,10 @@ def update_gist(item_cache: dict, gist_id=os.environ.get("GITHUB_GIST_ID", "b86d
         'X-GitHub-Api-Version': '2022-11-28',
         'Content-Type': 'application/x-www-form-urlencoded',
     }
-    content = json.dumps(item_cache, sort_keys=True,indent=2).replace('"', '\\"').replace("\n", "\\n")
+    content = json.dumps(item_cache, sort_keys=True, indent=2).replace('"', '\\"').replace("\n", "\\n")
     data = f'{{"description":"Last updated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}","files":{{"items.json":{{"content":"{content}"}}}}}}'
     response = requests.patch(f'https://api.github.com/gists/{gist_id}', headers=headers, data=data)
     if response.status_code == 200:
-        print("Successfully updated Gist.")
+        print("Successfully updated Item Cache Gist.")
     else:
-        print("Failed to update Gist:", response.text)
-
+        print("Failed to update Item Cache Gist:", response.text)

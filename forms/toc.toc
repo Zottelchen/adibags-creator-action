@@ -9,3 +9,4 @@
 ## X-Wago-ID: %WAGO_ID%
 
 AdiBags_%FILTER_NAME%.lua
+locale.lua
