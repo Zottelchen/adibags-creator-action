@@ -1,16 +1,27 @@
 FROM python:3.11-alpine
 # 3.11 is required for tomllib :)
 
-RUN apk add --no-cache curl
+# Configure Poetry
+ENV POETRY_VERSION=1.2.0
+ENV POETRY_HOME=/opt/poetry
+ENV POETRY_VENV=/opt/poetry-venv
+ENV POETRY_CACHE_DIR=/opt/.cache
 
-# Install Poetry & dependencies
-RUN curl -sSL https://install.python-poetry.org | python3 -
-ENV PATH="${PATH}:/root/.local/bin"
+# Install poetry separated from system interpreter
+RUN python3 -m venv $POETRY_VENV \
+    && $POETRY_VENV/bin/pip install -U pip setuptools \
+    && $POETRY_VENV/bin/pip install poetry==${POETRY_VERSION} \
+
+# Add `poetry` to PATH
+ENV PATH="${PATH}:${POETRY_VENV}/bin"
+
 WORKDIR /app
+# Install dependencies
 COPY poetry.lock pyproject.toml ./
 RUN poetry install
 
 # Copy the rest of the code
 COPY . /app/
 
+# Run the app
 ENTRYPOINT ["/app/entrypoint.sh"]
