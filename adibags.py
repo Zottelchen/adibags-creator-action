@@ -18,7 +18,8 @@ class AdiBagsAddon:
         self.access_token = access_token
         self.itemname_cache = itemname_cache
         self.categories = set()
-        self._getforms({"main.lua": None, "toc.toc": None, "locale.lua": None})
+        self.lang = set()
+        self._getforms({"main.lua": None, "toc.toc": None, "Localization.lua": None})
 
     def get_item_name(self, itemid: int | str) -> str:
         itemid = str(itemid)
@@ -98,15 +99,22 @@ class AdiBagsAddon:
         with open("out/supported_items.md", "w", encoding="utf8") as f:
             f.write(str_md)
 
-        with open("out/locale.lua", "w", encoding="utf8") as f:
-            str_locale = self.forms["locale.lua"]
-            # Todo: Locale
+        with open("out/Localization.lua", "w", encoding="utf8") as f:
+            str_locale = self.forms["Localization.lua"]
+            list_locale = ""
+            print(f"{len(self.lang)} language strings detected. Make sure to put them on CurseForge!")
+            for key in sorted(list(self.lang)):
+                list_locale += f'L["{key}"] = true\n'
+            str_locale = str_locale.replace("--!!BaseTranslation!!--", list_locale)
             str_locale = self._replace(str_locale)
             f.write(str_locale)
 
+    def L(self, lang: str):
+        self.lang.add(lang)
+        return f"L['{lang}']"
+
     def _getpartials(self):
         self.partials = {"MatchIDs": "", "Matching": "", "DefaultOptions": "", "Prefixes": "", "ConfigMenu": "", "DefaultColors": ""}
-
         H = Helper()
 
         # Prefixes are defined on an addon base
@@ -119,16 +127,17 @@ class AdiBagsAddon:
 
         # Working through the categories
         for category in sorted(self.categories):
+
             self.partials["ConfigMenu"] += (f'{T(2)}{category.simple_name}_config = {{\n'
                                             f'{T(3)}type = "group",\n'
-                                            f'{T(3)}name = "{category.name}",\n'
+                                            f'{T(3)}name = {self.L(category.name)},\n'
                                             f'{T(3)}desc = "", -- doesnt work,\n'
                                             f'{T(3)}inline = true,\n'
                                             f'{T(3)}order = {H.order()},\n'
                                             f'{T(3)}args = {{\n')
             self.partials["ConfigMenu"] += (f'{T(4)}Legendaries_desc = {{\n'
                                             f'{T(5)}type = "description",\n'
-                                            f'{T(5)}name = "{category.description}",\n'
+                                            f'{T(5)}name = {self.L(category.addon_description_overwrite or category.description)},\n'
                                             f'{T(5)}order = {H.order()},\n'
                                             f'{T(4)}}},\n')
 
@@ -136,15 +145,15 @@ class AdiBagsAddon:
                 self.partials["DefaultOptions"] += f"{T(3)}moveMerged{category.simple_name} = {str(category.merged_by_default).lower()},\n"
                 self.partials["DefaultColors"] += f'{T(4)}merged{category.simple_name} = converttorgb("{category.color:06x}", true) ,\n'
                 self.partials["ConfigMenu"] += (f'{T(4)}moveMerged{category.simple_name} = {{\n'
-                                                f'{T(5)}name = "|cffffd800Merge {category.name}|r",\n'
-                                                f'{T(5)}desc = "Merge all {category.name} into a single category.",\n'
+                                                f'{T(5)}name = string.format({self.L("%sMerge %s%s")}, "|cffffd800", {self.L(category.name)}, "|r"),\n'
+                                                f'{T(5)}desc = string.format({self.L("Merge all %s into a single category.")}, {self.L(category.name)}),\n'
                                                 f'{T(5)}type = "toggle",\n'
                                                 f'{T(5)}width = 1.5,\n'
                                                 f'{T(5)}order = {H.order()}\n'
                                                 f'{T(4)}}},\n')
                 self.partials["ConfigMenu"] += (f'{T(4)}colorMerged{category.simple_name} = {{\n'
-                                                f'{T(5)}name = "Color",\n'
-                                                f'{T(5)}desc = "Select a color for the merged {category.name} category.",\n'
+                                                f'{T(5)}name = {self.L("Color")},\n'
+                                                f'{T(5)}desc = string.format({self.L("Select a color for the merged %s category.")}, {self.L(category.name)}),\n'
                                                 f'{T(5)}type = "color",\n'
                                                 f'{T(5)}order = {H.order()},\n'
                                                 f'{T(5)}hasAlpha = false,\n'
@@ -157,7 +166,7 @@ class AdiBagsAddon:
                     subcategory_filters += f'{subcategory.simple_name}_IDs, '
                 subcategory_filters = f'{"_IDs, ".join(sorted(category.subcategory_names)[:-1])}_IDs, {sorted(category.subcategory_names)[-1]}_IDs'
                 self.partials["Matching"] += f'\n\tif self.db.profile.moveMerged{category.simple_name} then\n' \
-                                             f'{T(2)}Result[formatBagTitle(self, "{category.name}", converttohex(self.db.profile.color.merged{category.simple_name}))] = AddToSet({subcategory_filters})\n' \
+                                             f'{T(2)}Result[formatBagTitle(self, {self.L(category.name)}, converttohex(self.db.profile.color.merged{category.simple_name}))] = AddToSet({subcategory_filters})\n' \
                                              f'\telse\n'
 
             for i, subcategory in enumerate(sorted(category.subcategories)):
@@ -169,27 +178,27 @@ class AdiBagsAddon:
 
                 # Actual Matching
                 self.partials["Matching"] += f'\n\tif self.db.profile.move{subcategory.simple_name} then\n' \
-                                             f'{T(2)}Result[formatBagTitle(self, "{subcategory.name}", converttohex(self.db.profile.color.{subcategory.simple_name}))] = AddToSet({subcategory.simple_name}_IDs)\n'
+                                             f'{T(2)}Result[formatBagTitle(self, {self.L(subcategory.name)}, converttohex(self.db.profile.color.{subcategory.simple_name}))] = AddToSet({subcategory.simple_name}_IDs)\n'
                 if subcategory.bonus_condition:
-                    self.partials["Matching"] += f'{T(2)}Result[formatBagTitle(self, "{subcategory.name}", converttohex(self.db.profile.color.{subcategory.simple_name}))]["bonus_condition"] = {subcategory.bonus_condition}\n'
+                    self.partials["Matching"] += f'{T(2)}Result[formatBagTitle(self, {self.L(subcategory.name)}, converttohex(self.db.profile.color.{subcategory.simple_name}))]["bonus_condition"] = {subcategory.bonus_condition}\n'
                 if subcategory.override_method:
-                    self.partials["Matching"] += f'{T(2)}Result[formatBagTitle(self, "{subcategory.name}", converttohex(self.db.profile.color.{subcategory.simple_name}))]["override"] = {subcategory.override_method}\n'
+                    self.partials["Matching"] += f'{T(2)}Result[formatBagTitle(self, {self.L(subcategory.name)}, converttohex(self.db.profile.color.{subcategory.simple_name}))]["override"] = {subcategory.override_method}\n'
                 self.partials["Matching"] += f'\tend'
                 # Default Options
                 self.partials["DefaultOptions"] += f"{T(3)}move{subcategory.simple_name} = {str(subcategory.enabled_by_default).lower()},\n"
                 self.partials["DefaultColors"] += f'{T(4)}{subcategory.simple_name} = converttorgb("{subcategory.color:06x}", true) ,\n'
                 # Config Menu
                 self.partials["ConfigMenu"] += (f'{T(4)}move{subcategory.simple_name} = {{\n'
-                                                f'{T(5)}name = "{subcategory.name}",\n'
-                                                f'{T(5)}desc = "{subcategory.addon_description_overwrite or subcategory.description}",\n'
+                                                f'{T(5)}name = {self.L(subcategory.name)},\n'
+                                                f'{T(5)}desc = {self.L(subcategory.addon_description_overwrite or subcategory.description)},\n'
                                                 f'{T(5)}type = "toggle",\n'
                                                 f'{T(5)}width = 1.5,\n'
                                                 f'{T(5)}order = {H.order()},\n'
                                                 f'{f"{T(5)}disabled = function() return self.db.profile.moveMerged{category.simple_name} end" if category.mergeable else ""}'
                                                 f'\n{T(4)}}},\n')
                 self.partials["ConfigMenu"] += (f'{T(4)}color{subcategory.simple_name} = {{\n'
-                                                f'{T(5)}name = "Color",\n'
-                                                f'{T(5)}desc = "Select a color for {subcategory.name}.",\n'
+                                                f'{T(5)}name = {self.L("Color")},\n'
+                                                f'{T(5)}desc = string.format({self.L("Select a color for %s.")}, {self.L(subcategory.name)}),\n'
                                                 f'{T(5)}type = "color",\n'
                                                 f'{T(5)}order = {H.order()},\n'
                                                 f'{T(5)}disabled = function() return self.db.profile.moveMerged{category.simple_name} end,\n'

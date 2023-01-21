@@ -6,7 +6,8 @@ It takes item IDs from lists in /items and creates an AdiBags Plugin from that. 
 
 ## Changes from Version 1
 
-* The addon code is slightly better (think about upgrading from 'common' to 'uncommon'😅) and has new features such as:
+* If it isn't clear, this is breaking changes. Stuff in ./items/ needs to be updated.
+* The addon code is ~~slightly better (think about upgrading from 'common' to 'uncommon'😅)~~  a new flavor of weird and has new features such as:
     * prefixes
     * custom colors
     * grouped item categories

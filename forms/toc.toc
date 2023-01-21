@@ -8,5 +8,6 @@
 ## X-WoWI-ID: %WOW_INTERFACE_ID%
 ## X-Wago-ID: %WAGO_ID%
 
+Localization.lua
 AdiBags_%FILTER_NAME%.lua
-locale.lua
+
