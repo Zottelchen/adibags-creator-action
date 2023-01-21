@@ -5,7 +5,7 @@ RUN apk add --no-cache curl
 
 # Install Poetry & dependencies
 RUN curl -sSL https://install.python-poetry.org | python3 -
-RUN export PATH="/root/.local/bin:$PATH"
+ENV PATH="${PATH}:/root/.local/bin"
 WORKDIR /app
 COPY poetry.lock pyproject.toml ./
 RUN poetry install
