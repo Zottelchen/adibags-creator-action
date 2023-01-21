@@ -6,11 +6,12 @@ It takes item IDs from lists in /items and creates an AdiBags Plugin from that. 
 
 ## Changes from Version 1
 
-* The addon code is slightly better and features new features such as:
+* The addon code is slightly better (think about upgrading from 'common' to 'uncommon'😅) and has new features such as:
     * prefixes
-    * custom colors #TODO
-    * grouped item categories #TODO
-    * localization #TODO
+    * custom colors
+    * grouped item categories
+    * localization
+    * categories are sorted alphabetically
 * The item lists are now in a proper config format (toml instead of loose text files)
 * The generator code has been reworked to be hopefully less of a headache to work with
 * some environment variables are no longer environment variables, but instead can be found in items/_addon.toml
@@ -23,9 +24,8 @@ It takes item IDs from lists in /items and creates an AdiBags Plugin from that. 
 * BLIZZARD_API_SECRET: Your Blizzard API Secret
 * BLIZZARD_API_REGION: Your Blizzard API Region (default: eu), only relevant for authentication
 * GITHUB_GIST_ID: The GIST ID which contains item names (defaults to "[b86d83d7b11377fb4a143d9cb12aef64](https://gist.github.com/Zottelchen/b86d83d7b11377fb4a143d9cb12aef64)")
-* GITHUB_TOKEN: Your GitHub Token for adding item names to the cache - not needed, the cache is read-only by default. Only use, if you setup your own item name cache.
-
-* DEBUG: Set to 1 to disable fetching of item names
+* GITHUB_TOKEN: Your GitHub Token for adding item names to the cache - not needed, the cache is read-only by default. Only use, if you set up your own item name cache.
+* DEBUG: Set to 1 to disable fetching of item names and also maybe print some extra stuff
 
 ## _addon.toml
 
@@ -53,21 +53,27 @@ At the top level there are 3 properties:
 ```toml
 category_name = "Hearthstones"
 category_color = 0x0000ff # make sure to use hex values (0x prefix and no "" around the value)
-category_description = { _ = "Hearthstones are used to teleport to a previously visited location.",
-markdown = "This overwrites the description for markdown. It is optional, if not found, the default description is used instead.",
-addon = "This overwrites the description ingame. It is optional, if not found, the default description is used instead." }
 # according to the TOML spec, the category_description inline table should be in a single line
+# there are three descriptions: _ (the default), markdown & addon
+# _ will be used for both by default, but if one (or both) of the other two is defined, they will be used instead for their respective target
+category_description = { _ = "Hearthstones are used to teleport to a previously visited location.", markdown = "This overwrites the description for markdown. It is optional, if not found, the default description is used instead.", addon = "This overwrites the description ingame. It is optional, if not found, the default description is used instead." }
+mergeable = true # if true, there will be an extra option to merge all the subcategories of this file into one (default: false)
+merged_by_default = false # if true, the merged category will be enabled by default (default: true, but will only take effect if mergeable above is enabled)
 ```
 
 Then follows one or more lists of items. These will be grouped ingame:
 
 ```toml 
 [normal] #categorie separator. it isn't used in the addon.
-name = "Normal Hearthstone" #name of the category
-disabled_by_default = false # if the category should be disabled by default
+name = "Normal Hearthstone" # name of the category
+enabled_by_default = false # if the category should be enabled by default - if this is missing, the creator assumes TRUE
 description = { _ = "A Hearthstone" } # this works similiar to the category description
 color = 0xff0000 # color of the category - make sure to use hex values (0x prefix and no "" around the value)
+bonus_condition = false # very optional - IGNORING the ID list, if this is a method name (e.g. "C_ItemUpgrade.CanUpgradeItem") items returning true with that method will be in the category
+override_method = false # very optional - IN ADDITION to the ID list, the item is checked against this method (e.g. "C_LegendaryCrafting.IsRuneforgeLegendary"). If the method returns FALSE, the item IS in the category
 items = [ # list of item ids
-    6948
+    6948,
+    140192,
+    110560
 ]
 ```

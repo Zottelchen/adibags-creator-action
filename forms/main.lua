@@ -12,10 +12,12 @@ local L = addon.L
 local MatchIDs
 local Result = {}
 
-local function AddToSet(List)
+local function AddToSet(...)
     local Set = {}
-    for _, v in ipairs(List) do
-        Set[v] = true
+    for _, l in ipairs({ ... }) do
+        for _, v in ipairs(l) do
+            Set[v] = true
+        end
     end
     return Set
 end
@@ -52,18 +54,14 @@ end
 local function formatBagTitle(self, title, hex)
     local prefix = ""
     if self.db.profile.prefixCategories then
-        print("PrefixCategories:", self.db.profile.prefixCategories, "CustomPrefix:", self.db.profile.customPrefix)
-        print("Adibags Header Height:" .. AdiBags.HEADER_SIZE)
         if self.db.profile.prefixCategories == "!CUSTOM" then
-            print("If", self.db.profile.customPrefix)
             prefix = self.db.profile.customPrefix
         else
-            print("Else", self.db.profile.prefixCategories)
             prefix = self.db.profile.prefixCategories
         end
     end
     if self.db.profile.coloredPrefix then
-        prefix = "|cff" .. converttohex(self.db.profile.prefixColor) .. prefix .. "|r"
+        prefix = "|cff" .. converttohex(self.db.profile.color.prefix) .. prefix .. "|r"
         if self.db.profile.coloredCategories then
             return prefix .. "|cff" .. hex .. title .. "|r"
         else
@@ -97,8 +95,11 @@ function setFilter:OnInitialize()
             prefixCategories = "",
             customPrefix = "",
             coloredPrefix = true,
-            prefixColor = converttorgb("%ADDON_COLOR%", true),
 --!!DefaultOptions!!--
+            color = {
+                prefix = converttorgb("%ADDON_COLOR%", true),
+--!!DefaultColors!!--
+            }
         }
     })
 end
@@ -123,7 +124,7 @@ function setFilter:Filter(slotData)
         if MatchIDs[i]['override'] then
             slotData['loc'] = ItemLocation:CreateFromBagAndSlot(slotData.bag, slotData.slot)
             if slotData['loc'] and slotData['loc']:IsValid() then
-                if MatchIDs[i]['override_method'](slotData.loc) then
+                if MatchIDs[i]['override'](slotData.loc) then
                     return i
                 end
             end
@@ -133,7 +134,7 @@ function setFilter:Filter(slotData)
             if name[slotData.itemId] then
                 slotData['loc'] = ItemLocation:CreateFromBagAndSlot(slotData.bag, slotData.slot)
                 if slotData['loc'] and slotData['loc']:IsValid() then
-                    if not MatchIDs[i]['bonus_condition_method'](slotData.loc) then
+                    if not MatchIDs[i]['bonus_condition'](slotData.loc) then
                         -- THERE IS A NOT HERE!
                         return i
                     end
@@ -184,34 +185,34 @@ function setFilter:GetOptions()
                     name = "Custom Prefix",
                     desc = "Enter a custom prefix for the categories.",
                     type = "input",
-                    order = 40,
+                    order = 30,
                     width = "full",
                     disabled = function()
                         return self.db.profile.prefixCategories ~= "!CUSTOM"
                     end,
                 },
                 coloredPrefix = {
-                    name = "|cffB9FFB9Color Prefix|r",
+                    name = "|cffB9FFB9Colored Prefix|r",
                     desc = "Should the prefix be colored to the filter color? (Only works for text-prefixes, for obvious reasons.)",
                     type = "toggle",
-                    order = 50
+                    order = 40
                 },
                 prefixColor = {
                     name = "Prefix Color",
                     desc = "Select a color for the prefix.",
                     type = "color",
-                    order = 60,
+                    order = 50,
                     hasAlpha = false,
                     disabled = function()
-                        return not setFilter.db.profile.coloredPrefix
+                        return not self.db.profile.coloredPrefix
                     end,
                     get = function()
-                        local color = setFilter.db.profile.prefixColor
+                        local color = self.db.profile.color.prefix
                         AdiBags:UpdateFilters()
                         return color.r, color.g, color.b
                     end,
                     set = function(_, r, g, b)
-                        local color = setFilter.db.profile.prefixColor
+                        local color = self.db.profile.color.prefix
                         color.r, color.g, color.b = r, g, b
                         AdiBags:UpdateFilters()
                     end,
