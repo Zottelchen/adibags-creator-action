@@ -85,8 +85,8 @@ local function MatchIDs_Init(self)
 end
 
 local setFilter = AdiBags:RegisterFilter("%FILTER_NAME%", 98, "ABEvent-1.0")
-setFilter.uiName = "|cff%ADDON_COLOR%%FILTER_NAME%|r"
-setFilter.uiDesc = "%FILTER_DESCRIPTION%\n|cffFFD800Filter version: @project-version@|r"
+setFilter.uiName = string.format("|cff%ADDON_COLOR%%s|r", L.REPLACE.FILTER_NAME)
+setFilter.uiDesc = string.format("%s\n|cffffd800%s: @project-version@|r", L.REPLACE.FILTER_DESCRIPTION, L["Filter version"])
 
 function setFilter:OnInitialize()
     self.db = AdiBags.db:RegisterNamespace("%FILTER_NAME%", {
@@ -152,38 +152,38 @@ function setFilter:GetOptions()
     return {
         general_config = {
             type = "group",
-            name = "General Settings",
-            desc = "Settings affecting all categories.",
+            name = L["General Settings"],
+            desc = L["Settings affecting all categories."],
             inline = true,
             order = 1,
             args = {
                 description = {
                     type = "description",
-                    name = "These settings affect all categories of this filter. |cffFFD800If you overwrite prefix or categorie color, you either need to toggle the color setting twice or reload. |cff529F00AdiBags never intended to use icons, so they are glitchy. Make sure to disable prefix color, if you use an icon. |r",
+                    name = string.format("%s |cffffd800%s |cff529F00%s|r", L["These settings affect all categories of this filter."], L["If you overwrite prefix or categorie color, you either need to toggle the color setting twice or reload."], L["AdiBags never intended to use icons, so they are glitchy. Make sure to disable prefix color, if you use an icon."]),
                     order = 1,
                 },
                 coloredCategories = {
-                    name = "|cffFDFD96Colored Categories|r",
-                    desc = "Should Categories be colored?",
+                    name = string.format("|cffFDFD96%s|r", L["Colored Categories"]),
+                    desc = L["Should Categories be colored?"],
                     width = "full",
                     type = "toggle",
                     order = 10
                 },
                 prefixCategories = {
-                    name = "Prefix Categories",
-                    desc = "Select a prefix for the categories, if you like.",
+                    name = L["Prefix Categories"],
+                    desc = L["Select a prefix for the categories, if you like."],
                     type = "select",
                     order = 20,
                     values = {
-                        [""] = "None",
-                        ["!CUSTOM"] = "Custom Prefix",
+                        [""] = L["None"],
+                        ["!CUSTOM"] = L["Custom Prefix"],
 --!!Prefixes!!--
                     },
 
                 },
                 customPrefix = {
-                    name = "Custom Prefix",
-                    desc = "Enter a custom prefix for the categories.",
+                    name = L["Custom Prefix"],
+                    desc = L["Enter a custom prefix for the categories."],
                     type = "input",
                     order = 30,
                     width = "full",
@@ -192,14 +192,14 @@ function setFilter:GetOptions()
                     end,
                 },
                 coloredPrefix = {
-                    name = "|cffB9FFB9Colored Prefix|r",
-                    desc = "Should the prefix be colored to the filter color? (Only works for text-prefixes, for obvious reasons.)",
+                    name = string.format("|cffB9FFB9%s|r", L["Colored Prefix"]),
+                    desc = L["Should the prefix be colored to the filter color? (Only works for text-prefixes, for obvious reasons.)"],
                     type = "toggle",
                     order = 40
                 },
                 prefixColor = {
-                    name = "Prefix Color",
-                    desc = "Select a color for the prefix.",
+                    name = L["Prefix Color"],
+                    desc = L["Select a color for the prefix."],
                     type = "color",
                     order = 50,
                     hasAlpha = false,

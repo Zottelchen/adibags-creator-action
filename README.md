@@ -6,8 +6,8 @@ It takes item IDs from lists in /items and creates an AdiBags Plugin from that. 
 
 ## Changes from Version 1
 
-* If it isn't clear, this is breaking changes. Stuff in ./items/ needs to be updated.
-* The addon code is ~~slightly better (think about upgrading from 'common' to 'uncommon'😅)~~  a new flavor of weird and has new features such as:
+* If it isn't clear, this is breaking changes. All lists in ./items/ needs to be updated & a new file _addon.toml needs to be created. Also, if you haven't already you should really add formatting&validating to the github workflow (see the sample.yml)
+* The addon code is slightly better (think about upgrading from 'common' to 'uncommon'😅) (and the generator code is a new flavor of weird) and has new features such as:
     * prefixes
     * custom colors
     * grouped item categories
@@ -45,6 +45,7 @@ TOC_VERSION = "100002" # the TOC version of the addon
 CURSE_ID = "no_curse_id" # the curse id of the addon - important if you use BigWigsMods/packager
 WAGO_ID = "no_wago_id" # the wago id of the addon - important if you use BigWigsMods/packager
 WOW_INTERFACE_ID = "no_wowi_id" # the wowinterface id of the addon - important if you use BigWigsMods/packager
+# additionally, if you want to use localization in the addon code, you can use something like "L.REPLACE.ENTRY". This will then be added to the localization file.
 ```
 
 ## ID Lists

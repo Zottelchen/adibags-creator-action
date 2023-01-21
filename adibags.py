@@ -19,7 +19,7 @@ class AdiBagsAddon:
         self.itemname_cache = itemname_cache
         self.categories = set()
         self.lang = set()
-        self._getforms({"main.lua": None, "toc.toc": None, "Localization.lua": None})
+        self._getforms({"main.lua": None, "toc.toc": None, "locale.lua": None})
 
     def get_item_name(self, itemid: int | str) -> str:
         itemid = str(itemid)
@@ -60,6 +60,7 @@ class AdiBagsAddon:
 
     def _replace(self, text: str) -> str:
         for key in self.replacers:
+            text = text.replace(f"L.REPLACE.{key}", self.L(str(self.replacers[key])))
             text = text.replace(f"%{key}%", str(self.replacers[key]))
         return text
 
@@ -100,7 +101,7 @@ class AdiBagsAddon:
             f.write(str_md)
 
         with open("out/Localization.lua", "w", encoding="utf8") as f:
-            str_locale = self.forms["Localization.lua"]
+            str_locale = self.forms["locale.lua"]
             list_locale = ""
             print(f"{len(self.lang)} language strings detected. Make sure to put them on CurseForge!")
             for key in sorted(list(self.lang)):
@@ -143,7 +144,7 @@ class AdiBagsAddon:
 
             if category.mergeable:
                 self.partials["DefaultOptions"] += f"{T(3)}moveMerged{category.simple_name} = {str(category.merged_by_default).lower()},\n"
-                self.partials["DefaultColors"] += f'{T(4)}merged{category.simple_name} = converttorgb("{category.color:06x}", true) ,\n'
+                self.partials["DefaultColors"] += f'{T(4)}merged{category.simple_name} = converttorgb("{category.color:06x}", true),\n'
                 self.partials["ConfigMenu"] += (f'{T(4)}moveMerged{category.simple_name} = {{\n'
                                                 f'{T(5)}name = string.format({self.L("%sMerge %s%s")}, "|cffffd800", {self.L(category.name)}, "|r"),\n'
                                                 f'{T(5)}desc = string.format({self.L("Merge all %s into a single category.")}, {self.L(category.name)}),\n'
@@ -186,7 +187,7 @@ class AdiBagsAddon:
                 self.partials["Matching"] += f'\tend'
                 # Default Options
                 self.partials["DefaultOptions"] += f"{T(3)}move{subcategory.simple_name} = {str(subcategory.enabled_by_default).lower()},\n"
-                self.partials["DefaultColors"] += f'{T(4)}{subcategory.simple_name} = converttorgb("{subcategory.color:06x}", true) ,\n'
+                self.partials["DefaultColors"] += f'{T(4)}{subcategory.simple_name} = converttorgb("{subcategory.color:06x}", true),\n'
                 # Config Menu
                 self.partials["ConfigMenu"] += (f'{T(4)}move{subcategory.simple_name} = {{\n'
                                                 f'{T(5)}name = {self.L(subcategory.name)},\n'
