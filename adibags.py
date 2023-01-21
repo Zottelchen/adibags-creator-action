@@ -245,13 +245,13 @@ class AdiBagsCategory:
             if type(value) is dict and key != "category_description":
                 self.subcategories.add(AdiBagsSubCategory(value))
 
-        self.name = config["category_name"]
+        self.name = config["category_name"].replace("'", "\\'")
         self.simple_name = ''.join(e for e in self.name if e.isalnum())
         self.color = config["category_color"]
         description = config["category_description"]
-        self.description = description.get("_", None)
+        self.description = description.get("_", None).replace("'", "\\'")
         self.markdown_description_overwrite = description.get("markdown", None)
-        self.addon_description_overwrite = description.get("addon", None)
+        self.addon_description_overwrite = description.get("addon", "").replace("'", "\\'")
         self.mergeable = config.get("mergeable", False)
         self.merged_by_default = config.get("merged_by_default", True)
         self.item_map = {}
@@ -281,14 +281,14 @@ class AdiBagsCategory:
 
 class AdiBagsSubCategory:
     def __init__(self, subcategory_config: dict):
-        self.name = subcategory_config["name"]
+        self.name = subcategory_config["name"].replace("'", "\\'")
         self.simple_name = ''.join(e for e in self.name if e.isalnum())
         self.color = subcategory_config["color"]
         self.enabled_by_default = subcategory_config.get("enabled_by_default", True)
         description = subcategory_config["description"]
-        self.description = description.get("_", None)
+        self.description = description.get("_", None).replace("'", "\\'")
         self.markdown_description_overwrite = description.get("markdown", None)
-        self.addon_description_overwrite = description.get("addon", None)
+        self.addon_description_overwrite = description.get("addon", "").replace("'", "\\'")
         self.item_ids = set(subcategory_config.get("items", []))
         self.item_map = {}
         self.bonus_condition = subcategory_config.get("bonus_condition", False)
