@@ -23,5 +23,7 @@ RUN poetry install
 # Copy the rest of the code
 COPY . /app/
 
+RUN chmod +x /app/entrypoint.sh && chmod +x /app/create.py
+
 # Run the app
 ENTRYPOINT ["/app/entrypoint.sh"]
