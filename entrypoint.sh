@@ -1,5 +1,8 @@
 #!/bin/sh -l
 
+echo "INSTALLING DEPENDENCIES"
+poetry install
+
 printf "\n\n"
 echo "$(date) MAKING ADIBAGS_$ADDON_VARIANT"
 mkdir out

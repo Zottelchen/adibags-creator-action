@@ -16,10 +16,6 @@ RUN python3 -m venv $POETRY_VENV \
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
 WORKDIR /app
-# Install dependencies
-COPY poetry.lock pyproject.toml ./
-RUN poetry install
-
 # Copy the rest of the code
 COPY . /app/
 
