@@ -7,6 +7,7 @@ It takes item IDs from lists in /items and creates an AdiBags Plugin from that. 
 ## Changes from Version 1
 
 * If it isn't clear, this is breaking changes. All lists in ./items/ needs to be updated & a new file _addon.toml needs to be created. Also, if you haven't already you should really add formatting&validating to the github workflow (see the sample.yml)
+* The environment variables were renamend from `BLIZZ_ID`/`BLIZZ_SECRET` to `BLIZZARD_API_ID`/`BLIZZARD_API_SECRET`.
 * The addon code is slightly better (think about upgrading from 'common' to 'uncommon'😅) (and the generator code is a new flavor of weird) and has new features such as:
     * prefixes
     * custom colors
