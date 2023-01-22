@@ -58,9 +58,11 @@ class AdiBagsAddon:
                     item_name = self.get_item_name(item_id)
                     subcategory.item_map[item_id] = item_name
 
-    def _replace(self, text: str) -> str:
+    def _replace(self, text: str, skip_translation: bool = False) -> str:
         for key in self.replacers:
-            text = text.replace(f"L.REPLACE.{key}", self.L(str(self.replacers[key])))
+            if not skip_translation:
+                if f"L.REPLACE.{key}" in text:
+                    text = text.replace(f"L.REPLACE.{key}", self.L(str(self.replacers[key])))
             text = text.replace(f"%{key}%", str(self.replacers[key]))
         return text
 
@@ -107,7 +109,7 @@ class AdiBagsAddon:
             for key in sorted(list(self.lang)):
                 list_locale += f'L["{key}"] = true\n'
             str_locale = str_locale.replace("--!!BaseTranslation!!--", list_locale)
-            str_locale = self._replace(str_locale)
+            str_locale = self._replace(str_locale, skip_translation=True)
             f.write(str_locale)
 
     def L(self, lang: str):
