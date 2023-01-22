@@ -18,7 +18,7 @@ ENV PYTHONFAULTHANDLER=1 \
   POETRY_VERSION=1.2.2
 
 # System deps:
-RUN apt-get update && apt-get install -y build-essential unzip wget python-dev
+# RUN apt-get update && apt-get install -y build-essential unzip wget python-dev
 RUN pip install "poetry==$POETRY_VERSION"
 
 WORKDIR /src
