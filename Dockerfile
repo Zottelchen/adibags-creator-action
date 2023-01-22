@@ -13,9 +13,9 @@ ENV PYTHONFAULTHANDLER=1 \
   POETRY_NO_INTERACTION=1 \
   POETRY_VIRTUALENVS_CREATE=false \
   PATH="$PATH:/runtime/bin" \
-  PYTHONPATH="$PYTHONPATH:/runtime/lib/python3.9/site-packages" \
+  PYTHONPATH="$PYTHONPATH:/runtime/lib/python3.11/site-packages" \
   # Versions:
-  POETRY_VERSION=1.1.5
+  POETRY_VERSION=1.2.2
 
 # System deps:
 RUN apt-get update && apt-get install -y build-essential unzip wget python-dev
