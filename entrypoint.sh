@@ -7,4 +7,5 @@ echo "$(date) CREATING FILES"
 python create.py
 echo "$(date) CLEANING UP"
 cp -r .git ./out
-ls -la
+chmod -R 777 ./out
+ls -la ./out
