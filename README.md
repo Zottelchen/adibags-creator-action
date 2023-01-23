@@ -26,7 +26,7 @@ It takes item IDs from lists in /items and creates an AdiBags Plugin from that. 
 * BLIZZARD_API_SECRET: Your Blizzard API Secret
 * BLIZZARD_API_REGION: Your Blizzard API Region (default: eu), only relevant for authentication
 * GITHUB_GIST_ID: The GIST ID which contains item names (defaults to "[b86d83d7b11377fb4a143d9cb12aef64](https://gist.github.com/Zottelchen/b86d83d7b11377fb4a143d9cb12aef64)")
-* GITHUB_OAUTH: Your GitHub Token for adding item names to the cache - not needed, the cache is read-only by default. Only use, if you set up your own item name cache.
+* GITHUB_GIST_TOKEN: Your GitHub Token for adding item names to the cache - not needed, the cache is read-only by default. Only use, if you set up your own item name cache.
 * DEBUG: Set to 1 to disable fetching of item names and also maybe print some extra stuff
 
 ## _addon.toml
