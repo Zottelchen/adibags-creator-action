@@ -13,19 +13,19 @@ def get_gist(gist_id=os.environ.get("GITHUB_GIST_ID", "b86d83d7b11377fb4a143d9cb
         'X-GitHub-Api-Version': '2022-11-28',
     }
 
-    if os.environ.get("GITHUB_TOKEN"):  # this should make fetching private gists possible
-        headers['Authorization'] = f'Bearer {os.environ.get("GITHUB_TOKEN")}'
+    if os.environ.get("GITHUB_OAUTH"):  # this should make fetching private gists possible
+        headers['Authorization'] = f'Bearer {os.environ.get("GITHUB_OAUTH")}'
     return json.loads(requests.get(f'https://api.github.com/gists/{gist_id}', headers=headers).json()["files"]["items.json"]["content"])
 
 
 def update_gist(item_cache: dict, gist_id=os.environ.get("GITHUB_GIST_ID", "b86d83d7b11377fb4a143d9cb12aef64")):
     """Update the gist with a file named "items.json" on GitHub."""
-    if not os.environ.get("GITHUB_TOKEN"):
+    if not os.environ.get("GITHUB_OAUTH"):
         print("No GitHub Token found, skipping updating online item cache.")
         return
     headers = {
         'Accept': 'application/vnd.github+json',
-        'Authorization': f'Bearer {os.environ.get("GITHUB_TOKEN")}',
+        'Authorization': f'Bearer {os.environ.get("GITHUB_OAUTH")}',
         'X-GitHub-Api-Version': '2022-11-28',
         'Content-Type': 'application/x-www-form-urlencoded',
     }

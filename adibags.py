@@ -51,12 +51,19 @@ class AdiBagsAddon:
         self._save_files()
 
     def _build_itemmaps(self):
+        all_items = {}
         for category in self.categories:
             for subcategory in category.subcategories:
                 print(f"Getting Names for: {Fore.YELLOW}{category.name}/{subcategory.name}{Fore.RESET}")
                 for item_id in subcategory.item_ids:
                     item_name = self.get_item_name(item_id)
                     subcategory.item_map[item_id] = item_name
+                    if f"{item_id}/{item_name}" in all_items:
+                        all_items[f"{item_id}/{item_name}"].append(f"{category.name}/{subcategory.name}")
+                        print(f"{T(2)}{Fore.YELLOW}Duplicate Item: {item_id}/{item_name} in categories: {str(all_items[f'{item_id}/{item_name}'])}{Fore.RESET}")
+                    else:
+                        all_items[f"{item_id}/{item_name}"] = [f"{category.name}/{subcategory.name}"]
+
 
     def _replace(self, text: str, skip_translation: bool = False) -> str:
         for key in self.replacers:
