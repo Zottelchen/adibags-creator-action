@@ -2,13 +2,17 @@
 
 ## What does it do?
 
-It takes item IDs from lists in /items and creates an AdiBags Plugin from that. Just put your Blizzard API credentials into system variables BLIZZ_ID and BLIZZ_SECRET and run create.py.
+It takes item IDs from lists in /items and creates an AdiBags Plugin from that. Just put your Blizzard API credentials
+into system variables BLIZZ_ID and BLIZZ_SECRET and run create.py.
 
 ## Changes from Version 1
 
-* If it isn't clear, this is breaking changes. All lists in ./items/ needs to be updated & a new file _addon.toml needs to be created. Also, if you haven't already you should really add formatting&validating to the github workflow (see the sample.yml)
+* If it isn't clear, this is breaking changes. All lists in ./items/ needs to be updated & a new file _addon.toml needs
+  to be created. Also, if you haven't already you should really add formatting&validating to the github workflow (see
+  the sample.yml)
 * The environment variables were renamend from `BLIZZ_ID`/`BLIZZ_SECRET` to `BLIZZARD_API_ID`/`BLIZZARD_API_SECRET`.
-* The addon code is slightly better (think about upgrading from 'common' to 'uncommon'😅) (and the generator code is a new flavor of weird) and has new features such as:
+* The addon code is slightly better (think about upgrading from 'common' to 'uncommon'😅) (and the generator code is a
+  new flavor of weird) and has new features such as:
     * prefixes
     * custom colors
     * grouped item categories
@@ -22,16 +26,21 @@ It takes item IDs from lists in /items and creates an AdiBags Plugin from that. 
 
 ## Environment Variables
 
-* BLIZZARD_API_ID: Your Blizzard API ID
-* BLIZZARD_API_SECRET: Your Blizzard API Secret
-* BLIZZARD_API_REGION: Your Blizzard API Region (default: eu), only relevant for authentication
-* GITHUB_GIST_ID: The GIST ID which contains item names (defaults to "[b86d83d7b11377fb4a143d9cb12aef64](https://gist.github.com/Zottelchen/b86d83d7b11377fb4a143d9cb12aef64)")
-* GITHUB_GIST_TOKEN: Your GitHub Token for adding item names to the cache - not needed, the cache is read-only by default. Only use, if you set up your own item name cache.
-* DEBUG: Set to 1 to disable fetching of item names and also maybe print some extra stuff
+| **Variable**           | **Description**                                                                                                                                                                      |
+|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `BLIZZARD_API_ID`      | Your Blizzard API ID                                                                                                                                                                 |
+| `BLIZZARD_API_SECRET`  | Your Blizzard API Secret                                                                                                                                                             |
+| `BLIZZARD_API_REGION`  | Your Blizzard API Region (default: eu), only relevant for authentication                                                                                                             |
+| `GITHUB_GIST_ID`       | The GIST ID which contains item names (defaults to "[b86d83d7b11377fb4a143d9cb12aef64](https://gist.github.com/Zottelchen/b86d83d7b11377fb4a143d9cb12aef64)")                        |
+| `GITHUB_GIST_TOKEN`    | Your GitHub Token for adding item names to the cache - not needed, the cache is read-only by default. Only use, if you set up your own item name cache.                              |
+| `DEBUG`                | Set to 1 to disable fetching of item names and also maybe print some extra stuff                                                                                                     |
+| `APPRISE_ADDON_LOCALE` | Set to an Apprise URL to get a notification with the locale file attached when the addon is updated. Check [Apprise](https://github.com/caronc/apprise) for more info on the syntax. |
+| `APPRISE_ITEM_CACHE`   | Set to an Apprise URL to get a notification with the item cache attached when the addon is updated.                                                                                  |
 
 ## _addon.toml
 
-There now is a file *_addon.toml* in the items folder which defines some basics for the addon/filter. This file contains the following options:
+There now is a file *_addon.toml* in the items folder which defines some basics for the addon/filter. This file contains
+the following options:
 
 ```toml
 filter_name = "V2_TESTING" # The name of the filter
@@ -74,7 +83,7 @@ description = { _ = "A Hearthstone" } # this works similiar to the category desc
 color = 0xff0000 # color of the category - make sure to use hex values (0x prefix and no "" around the value)
 bonus_condition = false # very optional - IGNORING the ID list, if this is a method name (e.g. "C_ItemUpgrade.CanUpgradeItem") items returning true with that method will be in the category
 override_method = false # very optional - IN ADDITION to the ID list, the item is checked against this method (e.g. "C_LegendaryCrafting.IsRuneforgeLegendary"). If the method returns FALSE, the item IS in the category
-items = [ # list of item ids
+items = [# list of item ids
     6948,
     140192,
     110560

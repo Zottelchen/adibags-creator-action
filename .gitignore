@@ -3,3 +3,5 @@
 __pycache__/
 /itemname.cache.sqlite
 /out2/
+/itemcache.json
+/locale.lua
