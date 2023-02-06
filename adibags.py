@@ -77,7 +77,7 @@ class AdiBagsAddon:
         # TOC
         print("Creating TOC file.")
         str_toc = self._replace(self.forms["toc.toc"])
-        with open(f"out/AdiBags_{self.filter_name}.toc", "w", encoding="utf8") as f:
+        with open(f"out/AdiBags_{self.filter_name.replace(' ', '')}.toc", "w", encoding="utf8") as f:
             f.write(str_toc)
 
         # Main Addon
@@ -87,7 +87,7 @@ class AdiBagsAddon:
             str_main = str_main.replace(f"--!!{partial}!!--", self.partials[partial])
         str_main = self._replace(str_main)
 
-        with open(f"out/AdiBags_{self.filter_name}.lua", "w", encoding="utf8") as f:
+        with open(f"out/AdiBags_{self.filter_name.replace(' ', '')}.lua", "w", encoding="utf8") as f:
             f.write(str_main)
 
         # Markdown
