@@ -22,6 +22,8 @@ local function AddToSet(...)
     return Set
 end
 
+local database = {}
+
 --!!MatchIDs!!--
 
 local function converttohex(rgb)

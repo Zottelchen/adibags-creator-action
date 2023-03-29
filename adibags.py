@@ -172,23 +172,23 @@ class AdiBagsAddon:
                 self.partials["ConfigMenu"] += f'{H.seperator()}'
 
                 subcategory_filters = ""
-                for subcategory in sorted(category.subcategories):
-                    subcategory_filters += f'{subcategory.simple_name}_IDs, '
-                subcategory_filters = f'{"_IDs, ".join(sorted(category.subcategory_names)[:-1])}_IDs, {sorted(category.subcategory_names)[-1]}_IDs'
+                for subcategory in sorted(category.subcategory_names[:-1]):
+                    subcategory_filters += f'database["{subcategory}"], '
+                subcategory_filters += f'database["{sorted(category.subcategory_names)[-1]}"]'
                 self.partials["Matching"] += f'\n\tif self.db.profile.moveMerged{category.simple_name} then\n' \
                                              f'{T(2)}Result[formatBagTitle(self, {self.L(category.name)}, converttohex(self.db.profile.color.merged{category.simple_name}))] = AddToSet({subcategory_filters})\n' \
                                              f'\telse\n'
 
             for i, subcategory in enumerate(sorted(category.subcategories)):
                 # List of IDs
-                self.partials["MatchIDs"] += f"-- {subcategory.name}\nlocal {subcategory.simple_name}_IDs = {{\n"
+                self.partials["MatchIDs"] += f"-- {subcategory.name}\ndatabase[\"{subcategory.simple_name}\"] = {{\n"
                 for item in sorted(subcategory.item_map.keys()):
                     self.partials["MatchIDs"] += f"{item}, -- {subcategory.item_map[item]}\n"
                 self.partials["MatchIDs"] += "}\n\n"
 
                 # Actual Matching
                 self.partials["Matching"] += f'\n\tif self.db.profile.move{subcategory.simple_name} then\n' \
-                                             f'{T(2)}Result[formatBagTitle(self, {self.L(subcategory.name)}, converttohex(self.db.profile.color.{subcategory.simple_name}))] = AddToSet({subcategory.simple_name}_IDs)\n'
+                                             f'{T(2)}Result[formatBagTitle(self, {self.L(subcategory.name)}, converttohex(self.db.profile.color.{subcategory.simple_name}))] = AddToSet(database["{subcategory.simple_name}"])\n'
                 if subcategory.bonus_condition:
                     self.partials["Matching"] += f'{T(2)}Result[formatBagTitle(self, {self.L(subcategory.name)}, converttohex(self.db.profile.color.{subcategory.simple_name}))]["bonus_condition"] = {subcategory.bonus_condition}\n'
                 if subcategory.override_method:
