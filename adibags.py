@@ -172,7 +172,7 @@ class AdiBagsAddon:
                 self.partials["ConfigMenu"] += f'{H.seperator()}'
 
                 subcategory_filters = ""
-                for subcategory in sorted(category.subcategory_names[:-1]):
+                for subcategory in sorted(category.subcategory_names)[:-1]:
                     subcategory_filters += f'database["{subcategory}"], '
                 subcategory_filters += f'database["{sorted(category.subcategory_names)[-1]}"]'
                 self.partials["Matching"] += f'\n\tif self.db.profile.moveMerged{category.simple_name} then\n' \
