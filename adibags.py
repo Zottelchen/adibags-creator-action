@@ -1,5 +1,6 @@
 import os
 import tomllib
+import shutil
 
 from colorama import Fore
 
@@ -14,6 +15,7 @@ class AdiBagsAddon:
         self.filter_name = config["filter_name"]
         self.replacers = config["replacers"]  # key: string to replace, value: replacement
         self.prefixes = config["prefixes"]
+        self.filter_icon = config.get("filter_icon", None)
         self._add_default_replacers(config)
         self.access_token = access_token
         self.itemname_cache = itemname_cache
@@ -77,6 +79,13 @@ class AdiBagsAddon:
         # TOC
         print("Creating TOC file.")
         str_toc = self._replace(self.forms["toc.toc"])
+        if os.path.isfile("items/_icon.blp"):
+            print("Found icon, copying it.")
+            str_toc = str_toc.replace("## Dependencies:",f"## IconTexture: Interface\AddOns\AdiBags_{self.filter_name.replace(' ', '')}\icon\n## Dependencies:")
+            shutil.copyfile("items/_icon.blp", "out/icon.blp")
+        elif self.filter_icon is not None and self.filter_icon != "":
+            print("Using ingame icon.")
+            str_toc = str_toc.replace("## Dependencies:",f"## IconTexture: {self.filter_icon}\n## Dependencies:")
         with open(f"out/AdiBags_{self.filter_name.replace(' ', '')}.toc", "w", encoding="utf8") as f:
             f.write(str_toc)
 

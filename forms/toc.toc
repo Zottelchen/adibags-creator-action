@@ -1,7 +1,7 @@
 ## Interface: %TOC_VERSION%
 ## Title: AdiBags - %FILTER_NAME%
 ## Version: @project-version@
-## Author: Zottelchen
+## Author: %FILTER_AUTHOR%
 ## Notes: %FILTER_DESCRIPTION%
 ## Dependencies: AdiBags
 ## X-Curse-Project-ID: %CURSE_ID%
