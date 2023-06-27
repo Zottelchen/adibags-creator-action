@@ -4,9 +4,9 @@
 ## Author: %FILTER_AUTHOR%
 ## Notes: %FILTER_DESCRIPTION%
 ## Dependencies: AdiBags
-## X-Curse-Project-ID: %CURSE_ID%
-## X-WoWI-ID: %WOW_INTERFACE_ID%
-## X-Wago-ID: %WAGO_ID%
+## %CURSE_ID%
+## %WOW_INTERFACE_ID%
+## %WAGO_ID%
 
 Localization.lua
 AdiBags_%FILTER_NAME%.lua
