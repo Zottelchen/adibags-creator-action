@@ -72,11 +72,11 @@ class AdiBagsAddon:
             if not skip_translation:
                 if f"L.REPLACE.{key}" in text:
                     text = text.replace(f"L.REPLACE.{key}", self.L(str(self.replacers[key])))
-            if key == "WOW_INTERFACE_ID":
+            if key == "WOW_INTERFACE_ID" and self.replacers[key] is not None and self.replacers[key] != "":
                 text = text.replace(f"%{key}%", f"X-WoWI-ID: {str(self.replacers[key])}")
-            elif key == "WAGO_ID":
+            elif key == "WAGO_ID" and self.replacers[key] is not None and self.replacers[key] != "":
                 text = text.replace(f"%{key}%", f"X-Wago-ID: {str(self.replacers[key])}")
-            elif key == "CURSE_ID":
+            elif key == "CURSE_ID" and self.replacers[key] is not None and self.replacers[key] != "":
                 text = text.replace(f"%{key}%", f"X-Curse-Project-ID: {str(self.replacers[key])}")
             else:
                 text = text.replace(f"%{key}%", str(self.replacers[key]))
