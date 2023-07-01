@@ -9,5 +9,5 @@
 ## %WAGO_ID%
 
 Localization.lua
-AdiBags_%FILTER_NAME%.lua
+AdiBags_%FILTER_NAME_NO_SPACES%.lua
 

@@ -259,6 +259,7 @@ class AdiBagsAddon:
         self.replacers["FILTER_DESCRIPTION"] = config["filter_description"]
         self.replacers["FILTER_AUTHOR"] = config["filter_author"]
         self.replacers["ADDON_COLOR"] = f"{self.replacers['ADDON_COLOR']:06x}"
+        self.replacers["FILTER_NAME_NO_SPACES"] = self.filter_name.replace(" ", "")
 
 
 class AdiBagsCategory:
