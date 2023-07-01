@@ -4,6 +4,9 @@
 ## Author: %FILTER_AUTHOR%
 ## Notes: %FILTER_DESCRIPTION%
 ## Dependencies: AdiBags
+## X-Date: @project-date-iso@
+## X-Revision: @project-revision@
+## X-Category: Bags & Inventory
 ## %CURSE_ID%
 ## %WOW_INTERFACE_ID%
 ## %WAGO_ID%
